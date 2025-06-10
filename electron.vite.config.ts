@@ -2,6 +2,14 @@ import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { execSync } from 'child_process'
+
+const commitHash = execSync('git rev-parse --short HEAD').toString().trim()
+const rendererCommitHash = execSync(
+  'cd src/renderer && git rev-parse --short HEAD',
+)
+  .toString()
+  .trim()
 
 export default defineConfig({
   main: {
@@ -25,7 +33,7 @@ export default defineConfig({
       tailwindcss(),
     ],
     define: {
-      __COMMMIT_HASH__: JSON.stringify(''),
+      __COMMMIT_HASH__: JSON.stringify(commitHash + '/' + rendererCommitHash),
     },
   },
 })
