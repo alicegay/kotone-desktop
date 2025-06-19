@@ -4,11 +4,12 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { Client as RPCClient, SetActivity } from '@xhayper/discord-rpc'
 
-function createWindow(): void {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+let mainWindow: BrowserWindow
+
+const createWindow = (): void => {
+  mainWindow = new BrowserWindow({
+    width: 1600,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -77,11 +78,16 @@ app.on('window-all-closed', () => {
 const rpcClientID = '1381918006157901895'
 
 const rpc = new RPCClient({ clientId: rpcClientID })
-rpc.login()
 
-ipcMain.on('rpc.setActivity', (event, activity: SetActivity) => {
-  rpc.user.setActivity(activity)
+ipcMain.on('rpc.login', () => {
+  rpc.login()
+})
+rpc.on('ready', () => {
+  mainWindow.webContents.send('rpc.ready')
+})
+ipcMain.on('rpc.setActivity', (_event, activity: SetActivity) => {
+  rpc.user?.setActivity(activity)
 })
 ipcMain.on('rpc.clearActivity', () => {
-  rpc.user.clearActivity()
+  rpc.user?.clearActivity()
 })

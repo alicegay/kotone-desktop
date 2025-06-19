@@ -3,6 +3,9 @@ import { SetActivity } from '@xhayper/discord-rpc'
 
 const api = {
   rpc: {
+    login: () => ipcRenderer.send('rpc.login'),
+    ready: (callback: () => void) =>
+      ipcRenderer.on('rpc.ready', () => callback()),
     setActivity: (activity: SetActivity) =>
       ipcRenderer.send('rpc.setActivity', activity),
     clearActivity: () => ipcRenderer.send('rpc.clearActivity'),

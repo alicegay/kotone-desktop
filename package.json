@@ -2,7 +2,7 @@
   "name": "kotone-desktop",
   "private": true,
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "Desktop Jellyfin Client for Music",
   "main": "./out/main/index.js",
   "author": "Alice Hanaki",
   "scripts": {
