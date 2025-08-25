@@ -35,7 +35,7 @@
       "name": "kotone-web",
       "version": "0.0.0",
       "dependencies": {
-        "@hello-pangea/dnd": "^18.0.1",
+        "@hello-pangea/dnd": "18.0.1",
         "@tailwindcss/vite": "4.1.4",
         "@tanstack/react-query": "5.74.3",
         "@tanstack/react-query-devtools": "5.74.3",
@@ -46,14 +46,15 @@
         "fast-blurhash": "1.1.4",
         "hls.js": "1.6.2",
         "idb-keyval": "6.2.1",
-        "jellyfin-api": "github:alicegay/jellyfin-api#20f4867",
+        "jellyfin-api": "github:alicegay/jellyfin-api#618e2ab",
         "material-symbols": "0.31.1",
         "motion": "12.7.3",
         "react": "19.1.0",
         "react-blurhash": "0.3.0",
         "react-dom": "19.1.0",
-        "react-hls-player": "^3.0.7",
+        "react-hls-player": "3.0.7",
         "react-hook-form": "7.55.0",
+        "react-loading-indicators": "1.0.1",
         "react-router": "7.6.0",
         "react-scan": "0.3.3",
         "react-scroll": "^1.9.3",
@@ -64,7 +65,7 @@
         "ua-parser-js": "2.0.3",
         "use-debounce": "10.0.4",
         "uuid": "11.1.0",
-        "wanakana": "^5.3.1",
+        "wanakana": "5.3.1",
         "zustand": "5.0.3",
       },
       "devDependencies": {
@@ -1015,7 +1016,7 @@
 
     "jake": ["jake@10.9.2", "", { "dependencies": { "async": "^3.2.3", "chalk": "^4.0.2", "filelist": "^1.0.4", "minimatch": "^3.1.2" }, "bin": { "jake": "bin/cli.js" } }, "sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA=="],
 
-    "jellyfin-api": ["jellyfin-api@github:alicegay/jellyfin-api#20f4867", { "peerDependencies": { "axios": "1.x" } }, "alicegay-jellyfin-api-20f4867"],
+    "jellyfin-api": ["jellyfin-api@github:alicegay/jellyfin-api#618e2ab", { "peerDependencies": { "axios": "1.x" } }, "alicegay-jellyfin-api-618e2ab"],
 
     "jiti": ["jiti@2.4.2", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A=="],
 
@@ -1296,6 +1297,8 @@
     "react-hook-form": ["react-hook-form@7.55.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17 || ^18 || ^19" } }, "sha512-XRnjsH3GVMQz1moZTW53MxfoWN7aDpUg/GpVNc4A3eXRVNdGXfbzJ4vM4aLQ8g6XCUh1nIbx70aaNCl7kxnjog=="],
 
     "react-is": ["react-is@16.13.1", "", {}, "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="],
+
+    "react-loading-indicators": ["react-loading-indicators@1.0.1", "", { "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-tmGHdzw4arI83y8VYirck1n7suvdh1LAkeLk2v2pYMAWhPesQWcexqWKh9x6jDz/XAaIX/wFKS9MdDV8sSdoVw=="],
 
     "react-redux": ["react-redux@9.2.0", "", { "dependencies": { "@types/use-sync-external-store": "^0.0.6", "use-sync-external-store": "^1.4.0" }, "peerDependencies": { "@types/react": "^18.2.25 || ^19", "react": "^18.0 || ^19", "redux": "^5.0.0" }, "optionalPeers": ["@types/react", "redux"] }, "sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g=="],
 
