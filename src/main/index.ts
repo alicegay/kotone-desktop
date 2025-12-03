@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { Client as RPCClient, SetActivity } from '@xhayper/discord-rpc'
+import liquidGlass from 'electron-liquid-glass'
 
 let mainWindow: BrowserWindow
 
@@ -17,7 +18,16 @@ const createWindow = (): void => {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
+
+    frame: false,
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 18 },
+    vibrancy: false,
+    transparent: true,
   })
+
+  mainWindow.setWindowButtonVisibility(true)
+  // mainWindow.setWindowButtonPosition({ x: 32, y: 32 })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -32,9 +42,20 @@ const createWindow = (): void => {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    console.log('loaded url: ' + process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    console.log('loaded file: ' + join(__dirname, '../renderer/index.html'))
   }
+
+  mainWindow.webContents.once('did-finish-load', () => {
+    console.log('did-finish-load')
+    const glassID = liquidGlass.addView(mainWindow.getNativeWindowHandle(), {
+      cornerRadius: 32,
+      opaque: false,
+    })
+    liquidGlass.unstable_setVariant(glassID, 4)
+  })
 }
 
 // This method will be called when Electron has finished
