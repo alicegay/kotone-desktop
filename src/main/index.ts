@@ -54,6 +54,21 @@ const createWindow = (): void => {
       liquidGlass.unstable_setVariant(glassID, 4)
     }
   })
+
+  mainWindow.on('app-command', (_event, command) => {
+    if (command === 'browser-backward') {
+      mainWindow.webContents.navigationHistory.goBack()
+    } else if (command === 'browser-forward') {
+      mainWindow.webContents.navigationHistory.goForward()
+    }
+  })
+  mainWindow.on('swipe', (_event, direction) => {
+    if (direction === 'left') {
+      mainWindow.webContents.navigationHistory.goBack()
+    } else if (direction === 'right') {
+      mainWindow.webContents.navigationHistory.goForward()
+    }
+  })
 }
 
 // This method will be called when Electron has finished
