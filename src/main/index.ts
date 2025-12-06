@@ -27,7 +27,6 @@ const createWindow = (): void => {
   })
 
   mainWindow.setWindowButtonVisibility(true)
-  // mainWindow.setWindowButtonPosition({ x: 32, y: 32 })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -42,19 +41,18 @@ const createWindow = (): void => {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-    console.log('loaded url: ' + process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-    console.log('loaded file: ' + join(__dirname, '../renderer/index.html'))
   }
 
   mainWindow.webContents.once('did-finish-load', () => {
-    console.log('did-finish-load')
-    const glassID = liquidGlass.addView(mainWindow.getNativeWindowHandle(), {
-      cornerRadius: 32,
-      opaque: false,
-    })
-    liquidGlass.unstable_setVariant(glassID, 4)
+    if (liquidGlass.isGlassSupported()) {
+      const glassID = liquidGlass.addView(mainWindow.getNativeWindowHandle(), {
+        cornerRadius: 32,
+        opaque: false,
+      })
+      liquidGlass.unstable_setVariant(glassID, 4)
+    }
   })
 }
 
@@ -72,15 +70,29 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+
+  const rpcClientID = '1381918006157901895'
+
+  const rpc = new RPCClient({ clientId: rpcClientID })
+
+  ipcMain.on('rpc.login', () => {
+    rpc.login()
+  })
+  rpc.on('ready', () => {
+    mainWindow.webContents.send('rpc.ready')
+  })
+  ipcMain.on('rpc.setActivity', (_event, activity: SetActivity) => {
+    rpc.user?.setActivity(activity)
+  })
+  ipcMain.on('rpc.clearActivity', () => {
+    rpc.user?.clearActivity()
   })
 })
 
@@ -91,24 +103,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-const rpcClientID = '1381918006157901895'
-
-const rpc = new RPCClient({ clientId: rpcClientID })
-
-ipcMain.on('rpc.login', () => {
-  rpc.login()
-})
-rpc.on('ready', () => {
-  mainWindow.webContents.send('rpc.ready')
-})
-ipcMain.on('rpc.setActivity', (_event, activity: SetActivity) => {
-  rpc.user?.setActivity(activity)
-})
-ipcMain.on('rpc.clearActivity', () => {
-  rpc.user?.clearActivity()
 })
