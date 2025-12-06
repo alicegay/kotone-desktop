@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { Client as RPCClient, SetActivity } from '@xhayper/discord-rpc'
+import liquidGlass from 'electron-liquid-glass'
 
 let mainWindow: BrowserWindow
 
@@ -17,7 +18,15 @@ const createWindow = (): void => {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
+
+    frame: false,
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 18 },
+    vibrancy: false,
+    transparent: true,
   })
+
+  mainWindow.setWindowButtonVisibility(true)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -35,6 +44,31 @@ const createWindow = (): void => {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  mainWindow.webContents.once('did-finish-load', () => {
+    if (liquidGlass.isGlassSupported()) {
+      const glassID = liquidGlass.addView(mainWindow.getNativeWindowHandle(), {
+        cornerRadius: 32,
+        opaque: false,
+      })
+      liquidGlass.unstable_setVariant(glassID, 4)
+    }
+  })
+
+  mainWindow.on('app-command', (_event, command) => {
+    if (command === 'browser-backward') {
+      mainWindow.webContents.navigationHistory.goBack()
+    } else if (command === 'browser-forward') {
+      mainWindow.webContents.navigationHistory.goForward()
+    }
+  })
+  mainWindow.on('swipe', (_event, direction) => {
+    if (direction === 'left') {
+      mainWindow.webContents.navigationHistory.goBack()
+    } else if (direction === 'right') {
+      mainWindow.webContents.navigationHistory.goForward()
+    }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -51,15 +85,29 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+
+  const rpcClientID = '1381918006157901895'
+
+  const rpc = new RPCClient({ clientId: rpcClientID })
+
+  ipcMain.on('rpc.login', () => {
+    rpc.login()
+  })
+  rpc.on('ready', () => {
+    mainWindow.webContents.send('rpc.ready')
+  })
+  ipcMain.on('rpc.setActivity', (_event, activity: SetActivity) => {
+    rpc.user?.setActivity(activity)
+  })
+  ipcMain.on('rpc.clearActivity', () => {
+    rpc.user?.clearActivity()
   })
 })
 
@@ -70,24 +118,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-const rpcClientID = '1381918006157901895'
-
-const rpc = new RPCClient({ clientId: rpcClientID })
-
-ipcMain.on('rpc.login', () => {
-  rpc.login()
-})
-rpc.on('ready', () => {
-  mainWindow.webContents.send('rpc.ready')
-})
-ipcMain.on('rpc.setActivity', (_event, activity: SetActivity) => {
-  rpc.user?.setActivity(activity)
-})
-ipcMain.on('rpc.clearActivity', () => {
-  rpc.user?.clearActivity()
 })

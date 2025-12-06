@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { SetActivity } from '@xhayper/discord-rpc'
+import liquidGlass from 'electron-liquid-glass'
 
 const api = {
   rpc: {
@@ -10,6 +11,7 @@ const api = {
       ipcRenderer.send('rpc.setActivity', activity),
     clearActivity: () => ipcRenderer.send('rpc.clearActivity'),
   },
+  glass: liquidGlass.isGlassSupported(),
 }
 
 if (process.contextIsolated) {
